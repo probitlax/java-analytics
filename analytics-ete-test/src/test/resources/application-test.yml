@@ -1,0 +1,3 @@
+analytics-service-url: ${ANALYTICS_SERVICE_URL:http://localhost:8081/analysis-app/v1}
+
+

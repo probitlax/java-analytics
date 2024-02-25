@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: analysis-app
+  webservices:
+    path: analysis-app/v1
+  datasource:
+    url: jdbc:postgresql://localhost:5432/profile_analysis_db
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+management:
+  server:
+    port: 8080
+
+analysis:
+  price:
+    first: 1500.15
+    second: 2180.40
+
+

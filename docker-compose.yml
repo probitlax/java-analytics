@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    container_name: postgres
+    environment:
+      POSTGRES_DB: profile_analysis_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - './sql/init.sql:/docker-entrypoint-initdb.d/init.sql'
+    ports:
+      - '5432:5432'
+
+  analytics-service:
+    platform: linux/x86_64
+    build:
+      context: ./analytics-service
+      dockerfile: Dockerfile
+    container_name: analytics-service
+    image: analytics-service
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/profile_analysis_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - '8081:8080'
+
+  e2e-tests:
+    platform: linux/x86_64
+    build:
+      context: ./analytics-ete-test
+      dockerfile: Dockerfile
+    container_name: analytics-ete-test
+    image: analytics-ete-test
+    depends_on:
+      - analytics-service
+    environment:
+      ANALYTICS_SERVICE_URL: http://analytics-service:8080/analysis-app/v1
+
